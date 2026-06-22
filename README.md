@@ -1,12 +1,16 @@
 # Mini Calendar
 
+**中文：** Mini Calendar 在 Obsidian 原生文件列表底部嵌入一个紧凑的单周日历，目录树和日历始终显示在同一个侧边栏页面。单击日期即可打开或创建日记，并支持彩虹日期、周号和每周起始日设置。
+
+**English:** Mini Calendar embeds a compact one-week calendar below the built-in file explorer, keeping the folder tree and calendar in the same sidebar tab. Click any date to open or create its daily note, with optional rainbow dates, week numbers, and configurable week starts.
+
 [English](#english) · [中文](#中文)
 
 ## English
 
 Mini Calendar adds a compact one-week calendar below Obsidian's built-in file explorer. The folder tree stays scrollable above the calendar, so both remain available in the same sidebar tab.
 
-![Mini Calendar in English](assets/mini-calendar-en.webp)
+![Mini Calendar in English](https://raw.githubusercontent.com/RanceLee233/Mini-Calendar/main/assets/mini-calendar-en.webp)
 
 ### Features
 
@@ -104,7 +108,7 @@ OBSIDIAN_PLUGIN_DEV_DIR="/path/to/vault/.obsidian/plugins/mini-calendar" npm run
 
 Mini Calendar 在 Obsidian 原生文件列表底部嵌入一个紧凑的单周日历。目录树在上方正常滚动，日历固定在下方，两者共用同一个侧边栏标签页。
 
-![Mini Calendar 中文界面](assets/mini-calendar-zh.webp)
+![Mini Calendar 中文界面](https://raw.githubusercontent.com/RanceLee233/Mini-Calendar/main/assets/mini-calendar-zh.webp)
 
 ### 功能
 

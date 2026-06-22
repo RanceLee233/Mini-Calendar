@@ -82,7 +82,9 @@ npm run verify
 - GitHub Release 标签必须与 `manifest.json` 的版本完全一致，不能带 `v` 前缀。
 - Release 必须上传 `main.js`、`manifest.json`、`styles.css`。
 - README 必须保留中英文、隐私说明、安装说明、MIT 许可证链接和 Notebook Navigator 致谢。
+- README 顶部必须先提供中文和英文各一至两句功能摘要，避免中文用户需要跨过完整英文段落才能理解插件用途。
 - README 双语截图应展示“文件列表在上、日历固定在下”的位置关系；目录名称和其他私人信息必须先打码，正文区域使用空白新标签页；优先存入仓库 `assets/`，不依赖个人图床。
+- README 截图使用指向本仓库 Raw 文件的绝对 URL，避免社区插件页面无法解析相对资源路径。
 - 默认视觉必须与 Notebook Navigator 保持明显差异：独立卡片、卡片间距、统一圆角和彩虹日期；不得恢复为相连日期条带的一比一外观。
 - Obsidian 市场首次提交前检查插件 ID 唯一、描述不超过 250 字符、以句号结尾，且不得包含冗余单词 “Obsidian”。
 
