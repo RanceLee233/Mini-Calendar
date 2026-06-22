@@ -1,4 +1,5 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
+import { AboutModal } from "./about-modal";
 import { getStrings } from "./i18n";
 import type MiniCalendarPlugin from "./main";
 
@@ -87,5 +88,12 @@ export class MiniCalendarSettingTab extends PluginSettingTab {
         .onChange(async value => {
           await this.plugin.updateSettings({ rainbowDates: value });
         }));
+
+    new Setting(containerEl)
+      .setName(strings.settings.about.name)
+      .setDesc(strings.settings.about.description)
+      .addButton(button => button
+        .setButtonText(strings.settings.about.button)
+        .onClick(() => new AboutModal(this.plugin).open()));
   }
 }

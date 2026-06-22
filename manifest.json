@@ -3,7 +3,7 @@
   "name": "Mini Calendar",
   "version": "0.3.0",
   "minAppVersion": "1.5.0",
-  "description": "Add a compact one-week calendar below Obsidian's file explorer.",
+  "description": "Add a compact one-week calendar below the built-in file explorer.",
   "author": "RanceLee",
   "authorUrl": "https://github.com/RanceLee233",
   "isDesktopOnly": false

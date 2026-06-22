@@ -1,6 +1,13 @@
 import { getLanguage } from "obsidian";
 
 export interface MiniCalendarStrings {
+  about: {
+    blog: string;
+    github: string;
+    intro: string;
+    title: string;
+    version: (version: string) => string;
+  };
   calendarLabel: string;
   commands: {
     resetToday: string;
@@ -17,6 +24,7 @@ export interface MiniCalendarStrings {
   nextWeek: string;
   previousWeek: string;
   settings: {
+    about: { button: string; description: string; name: string };
     confirmNonToday: { description: string; name: string };
     rainbowDates: { description: string; name: string };
     showWeekNumber: { description: string; name: string };
@@ -32,6 +40,13 @@ export interface MiniCalendarStrings {
 }
 
 const en: MiniCalendarStrings = {
+  about: {
+    blog: "Author's blog",
+    github: "GitHub profile",
+    intro: "Mini Calendar is made by RanceLee, who writes about Obsidian, practical AI workflows, and independent software.",
+    title: "About Mini Calendar",
+    version: version => `Version ${version}`
+  },
   calendarLabel: "Mini calendar",
   commands: {
     resetToday: "Return to today",
@@ -48,6 +63,11 @@ const en: MiniCalendarStrings = {
   nextWeek: "Next week",
   previousWeek: "Previous week",
   settings: {
+    about: {
+      button: "About the author",
+      description: "Learn about RanceLee and find the author's GitHub profile and blog.",
+      name: "About"
+    },
     confirmNonToday: {
       description: "Ask before creating a daily note for a past or future date. Today's note never requires confirmation.",
       name: "Confirm past and future notes"
@@ -72,6 +92,13 @@ const en: MiniCalendarStrings = {
 };
 
 const zh: MiniCalendarStrings = {
+  about: {
+    blog: "作者博客",
+    github: "GitHub 主页",
+    intro: "Mini Calendar 由 RanceLee 独立开发。我长期分享 Obsidian 教程、AI 实践与效率工具，也提供系统化 Obsidian 教程和开箱即用的预设仓库。欢迎通过作者博客了解更多内容，或在 GitHub 查看我的开源项目。",
+    title: "关于 Mini Calendar",
+    version: version => `当前版本：${version}`
+  },
   calendarLabel: "迷你日历",
   commands: {
     resetToday: "回到今天",
@@ -88,6 +115,11 @@ const zh: MiniCalendarStrings = {
   nextWeek: "下一周",
   previousWeek: "上一周",
   settings: {
+    about: {
+      button: "关于我",
+      description: "了解作者 RanceLee，访问 GitHub 主页和个人博客。",
+      name: "关于"
+    },
     confirmNonToday: {
       description: "创建过去或未来日期的日记前询问；创建今天的日记始终无需确认。",
       name: "确认创建非当日日记"
