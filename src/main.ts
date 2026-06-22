@@ -47,14 +47,14 @@ export default class MiniCalendarPlugin extends Plugin {
     this.settings = normalizeSettings(await this.loadData());
     const strings = getStrings();
     this.addCommand({
-      id: "show-file-explorer-with-mini-calendar",
+      id: "show-file-explorer",
       name: strings.commands.showCalendar,
       callback: () => {
         void this.showFileExplorer();
       }
     });
     this.addCommand({
-      id: "reset-mini-calendar-to-today",
+      id: "reset-to-today",
       name: strings.commands.resetToday,
       callback: () => {
         for (const widget of this.widgets.values()) widget.resetToToday();
@@ -65,7 +65,7 @@ export default class MiniCalendarPlugin extends Plugin {
     this.app.workspace.onLayoutReady(() => {
       this.mountWidgets();
       this.observer = new MutationObserver(() => this.scheduleMount());
-      this.observer.observe(document.body, { childList: true, subtree: true });
+      this.observer.observe(activeDocument.body, { childList: true, subtree: true });
     });
 
     this.registerEvent(this.app.workspace.on("layout-change", () => this.scheduleMount()));
@@ -142,7 +142,7 @@ export default class MiniCalendarPlugin extends Plugin {
   private async showFileExplorer(): Promise<void> {
     const existing = this.app.workspace.getLeavesOfType("file-explorer")[0];
     if (existing) {
-      this.app.workspace.revealLeaf(existing);
+      await this.app.workspace.revealLeaf(existing);
       this.scheduleMount();
       return;
     }
@@ -150,7 +150,7 @@ export default class MiniCalendarPlugin extends Plugin {
     const leaf = this.app.workspace.getLeftLeaf(false);
     if (!leaf) return;
     await leaf.setViewState({ type: "file-explorer", active: true });
-    this.app.workspace.revealLeaf(leaf);
+    await this.app.workspace.revealLeaf(leaf);
     this.scheduleMount();
   }
 
@@ -213,7 +213,7 @@ export default class MiniCalendarPlugin extends Plugin {
 
   private mountWidgets(): void {
     const liveLeafContents = new Set(
-      Array.from(document.querySelectorAll<HTMLElement>('.workspace-leaf-content[data-type="file-explorer"]'))
+      Array.from(activeDocument.querySelectorAll<HTMLElement>('.workspace-leaf-content[data-type="file-explorer"]'))
     );
 
     for (const [leafContent, widget] of this.widgets) {
