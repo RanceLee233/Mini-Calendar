@@ -1,7 +1,7 @@
 {
   "id": "mini-calendar",
   "name": "Mini Calendar",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "minAppVersion": "1.5.0",
   "description": "Add a compact one-week calendar below the built-in file explorer.",
   "author": "RanceLee",
