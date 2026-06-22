@@ -21,6 +21,7 @@
 
 .mini-calendar {
   --mini-calendar-cell-height: 50px;
+  --mini-calendar-day-gap: 4px;
   box-sizing: border-box;
   min-width: 238px;
   padding: 10px 14px 8px;
@@ -135,6 +136,7 @@ button.mini-calendar__today:focus-visible,
 
 .mini-calendar__days {
   align-items: stretch;
+  gap: var(--mini-calendar-day-gap);
 }
 
 .mini-calendar__day {
@@ -148,46 +150,120 @@ button.mini-calendar__today:focus-visible,
   margin: 0;
   padding: 2px 0 0;
   color: var(--text-muted);
-  background: transparent;
-  border-radius: 0;
+  background: color-mix(in srgb, var(--background-modifier-hover) 58%, transparent);
+  border: 1px solid transparent;
+  border-radius: var(--radius-m);
   cursor: pointer;
 }
 
-.mini-calendar__day.is-weekend {
-  background: var(--background-modifier-hover);
+.mini-calendar:not(.is-rainbow) .mini-calendar__day.is-weekend {
+  background: #e8f5e9;
+  border-color: #d6e8df;
 }
 
-.mini-calendar__day.is-weekend-start {
-  border-radius: var(--radius-m) 0 0 var(--radius-m);
+.mini-calendar:not(.is-rainbow) .mini-calendar__day.is-weekend.is-today {
+  border-color: var(--interactive-accent);
 }
 
-.mini-calendar__day.is-weekend-end {
-  border-radius: 0 var(--radius-m) var(--radius-m) 0;
+body.theme-dark .mini-calendar:not(.is-rainbow) .mini-calendar__day.is-weekend {
+  background: color-mix(in srgb, #498f6f 24%, var(--background-secondary));
+  border-color: color-mix(in srgb, #498f6f 44%, transparent);
 }
 
-.mini-calendar__day.is-weekend-start.is-weekend-end {
-  border-radius: var(--radius-m);
+body.theme-dark .mini-calendar:not(.is-rainbow) .mini-calendar__day.is-weekend.is-today {
+  border-color: var(--interactive-accent);
 }
 
 .mini-calendar__day:hover {
   color: var(--text-normal);
-  background: color-mix(in srgb, var(--interactive-accent) 12%, var(--background-secondary));
-  border-radius: var(--radius-m);
+  background: color-mix(in srgb, var(--interactive-accent) 14%, var(--background-secondary));
+  border-color: color-mix(in srgb, var(--interactive-accent) 45%, transparent);
 }
 
 .mini-calendar__day.is-today {
   color: var(--text-normal);
-  background: color-mix(in srgb, var(--interactive-accent) 55%, var(--background-secondary));
-  border-radius: var(--radius-m);
+  background: color-mix(in srgb, var(--interactive-accent) 16%, var(--background-secondary));
+  border-color: var(--interactive-accent);
+  font-weight: var(--font-semibold);
 }
 
 .mini-calendar__day.is-active-note::after {
   content: "";
   position: absolute;
-  inset: 2px;
-  border: 1px solid var(--interactive-accent);
-  border-radius: var(--radius-m);
+  inset: 3px;
+  border: 1px solid color-mix(in srgb, var(--interactive-accent) 75%, transparent);
+  border-radius: calc(var(--radius-m) - 2px);
   pointer-events: none;
+}
+
+.mini-calendar.is-rainbow .mini-calendar__day:nth-child(1) {
+  background: color-mix(in srgb, #ff6b6b 30%, var(--background-secondary));
+}
+
+.mini-calendar.is-rainbow .mini-calendar__day:nth-child(2) {
+  background: color-mix(in srgb, #ffa94d 30%, var(--background-secondary));
+}
+
+.mini-calendar.is-rainbow .mini-calendar__day:nth-child(3) {
+  background: color-mix(in srgb, #ffd43b 30%, var(--background-secondary));
+}
+
+.mini-calendar.is-rainbow .mini-calendar__day:nth-child(4) {
+  background: color-mix(in srgb, #69db7c 30%, var(--background-secondary));
+}
+
+.mini-calendar.is-rainbow .mini-calendar__day:nth-child(5) {
+  background: color-mix(in srgb, #66d9e8 30%, var(--background-secondary));
+}
+
+.mini-calendar.is-rainbow .mini-calendar__day:nth-child(6) {
+  background: color-mix(in srgb, #748ffc 30%, var(--background-secondary));
+}
+
+.mini-calendar.is-rainbow .mini-calendar__day:nth-child(7) {
+  background: color-mix(in srgb, #b197fc 30%, var(--background-secondary));
+}
+
+.mini-calendar.is-rainbow .mini-calendar__day:hover {
+  border-color: color-mix(in srgb, currentColor 35%, transparent);
+  filter: saturate(1.12) brightness(1.03);
+}
+
+.mini-calendar.is-rainbow .mini-calendar__day.is-today {
+  border-color: var(--interactive-accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--interactive-accent) 45%, transparent);
+}
+
+body.theme-dark .mini-calendar.is-rainbow .mini-calendar__day {
+  background-blend-mode: normal;
+}
+
+body.theme-dark .mini-calendar.is-rainbow .mini-calendar__day:nth-child(1) {
+  background: color-mix(in srgb, #ff6b6b 22%, var(--background-secondary));
+}
+
+body.theme-dark .mini-calendar.is-rainbow .mini-calendar__day:nth-child(2) {
+  background: color-mix(in srgb, #ffa94d 22%, var(--background-secondary));
+}
+
+body.theme-dark .mini-calendar.is-rainbow .mini-calendar__day:nth-child(3) {
+  background: color-mix(in srgb, #ffd43b 22%, var(--background-secondary));
+}
+
+body.theme-dark .mini-calendar.is-rainbow .mini-calendar__day:nth-child(4) {
+  background: color-mix(in srgb, #69db7c 22%, var(--background-secondary));
+}
+
+body.theme-dark .mini-calendar.is-rainbow .mini-calendar__day:nth-child(5) {
+  background: color-mix(in srgb, #66d9e8 22%, var(--background-secondary));
+}
+
+body.theme-dark .mini-calendar.is-rainbow .mini-calendar__day:nth-child(6) {
+  background: color-mix(in srgb, #748ffc 22%, var(--background-secondary));
+}
+
+body.theme-dark .mini-calendar.is-rainbow .mini-calendar__day:nth-child(7) {
+  background: color-mix(in srgb, #b197fc 22%, var(--background-secondary));
 }
 
 .mini-calendar__day-number {
@@ -234,5 +310,9 @@ button.mini-calendar__today:focus-visible,
 
   .mini-calendar__day {
     --mini-calendar-cell-height: 49px;
+  }
+
+  .mini-calendar {
+    --mini-calendar-day-gap: 3px;
   }
 }

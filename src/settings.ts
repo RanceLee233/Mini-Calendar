@@ -6,12 +6,14 @@ export type WeekStartSetting = "locale" | "monday" | "sunday";
 
 export interface MiniCalendarSettings {
   confirmNonTodayCreation: boolean;
+  rainbowDates: boolean;
   showWeekNumber: boolean;
   weekStart: WeekStartSetting;
 }
 
 export const DEFAULT_SETTINGS: MiniCalendarSettings = {
   confirmNonTodayCreation: true,
+  rainbowDates: true,
   showWeekNumber: false,
   weekStart: "locale"
 };
@@ -26,6 +28,9 @@ export function normalizeSettings(value: unknown): MiniCalendarSettings {
     confirmNonTodayCreation: typeof loaded.confirmNonTodayCreation === "boolean"
       ? loaded.confirmNonTodayCreation
       : DEFAULT_SETTINGS.confirmNonTodayCreation,
+    rainbowDates: typeof loaded.rainbowDates === "boolean"
+      ? loaded.rainbowDates
+      : DEFAULT_SETTINGS.rainbowDates,
     showWeekNumber: typeof loaded.showWeekNumber === "boolean"
       ? loaded.showWeekNumber
       : DEFAULT_SETTINGS.showWeekNumber,
@@ -72,6 +77,15 @@ export class MiniCalendarSettingTab extends PluginSettingTab {
         .setValue(this.plugin.settings.showWeekNumber)
         .onChange(async value => {
           await this.plugin.updateSettings({ showWeekNumber: value });
+        }));
+
+    new Setting(containerEl)
+      .setName(strings.settings.rainbowDates.name)
+      .setDesc(strings.settings.rainbowDates.description)
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.rainbowDates)
+        .onChange(async value => {
+          await this.plugin.updateSettings({ rainbowDates: value });
         }));
   }
 }

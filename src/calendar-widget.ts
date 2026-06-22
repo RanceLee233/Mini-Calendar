@@ -44,6 +44,7 @@ export class MiniCalendarWidget {
     root.setAttr("aria-label", strings.calendarLabel);
 
     const calendar = root.createDiv({ cls: "mini-calendar" });
+    calendar.toggleClass("is-rainbow", this.plugin.settings.rainbowDates);
     const header = calendar.createDiv({ cls: "mini-calendar__header" });
     const title = header.createDiv({ cls: "mini-calendar__title" });
     title.createSpan({
