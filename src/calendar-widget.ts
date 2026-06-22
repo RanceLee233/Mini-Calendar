@@ -1,6 +1,7 @@
 import { TFile, setIcon } from "obsidian";
 import type MiniCalendarPlugin from "./main";
-import { addDays, getWeek, hasUnfinishedTask, sameDay, toIsoDate } from "./calendar-utils";
+import { addDays, getIsoWeekNumber, getWeek, hasUnfinishedTask, sameDay, toIsoDate } from "./calendar-utils";
+import { formatMonthYear, getStrings, getWeekdayLabels } from "./i18n";
 
 export class MiniCalendarWidget {
   private cursor = new Date();
@@ -39,34 +40,44 @@ export class MiniCalendarWidget {
   private render(): void {
     const root = this.hostEl;
     root.empty();
-    root.setAttr("aria-label", "迷你日历");
+    const strings = getStrings();
+    root.setAttr("aria-label", strings.calendarLabel);
 
     const calendar = root.createDiv({ cls: "mini-calendar" });
     const header = calendar.createDiv({ cls: "mini-calendar__header" });
-    const monthNames = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
-    header.createDiv({
+    const title = header.createDiv({ cls: "mini-calendar__title" });
+    title.createSpan({
       cls: "mini-calendar__month",
-      text: `${monthNames[this.cursor.getMonth()]} ${this.cursor.getFullYear()}`
+      text: formatMonthYear(this.cursor)
     });
+    if (this.plugin.settings.showWeekNumber) {
+      const week = getIsoWeekNumber(this.cursor);
+      title.createSpan({
+        cls: "mini-calendar__week-number",
+        text: `W${week}`,
+        attr: { "aria-label": strings.weekNumberAria(week) }
+      });
+    }
 
     const actions = header.createDiv({ cls: "mini-calendar__actions" });
-    this.createIconButton(actions, "chevron-left", "上一周", () => {
+    this.createIconButton(actions, "chevron-left", strings.previousWeek, () => {
       this.cursor = addDays(this.cursor, -7);
       this.render();
     });
     const todayButton = actions.createEl("button", {
       cls: "mini-calendar__today",
-      text: "今天",
-      attr: { type: "button", "aria-label": "返回今天" }
+      text: strings.today,
+      attr: { type: "button", "aria-label": strings.todayAria }
     });
     todayButton.addEventListener("click", () => this.resetToToday());
-    this.createIconButton(actions, "chevron-right", "下一周", () => {
+    this.createIconButton(actions, "chevron-right", strings.nextWeek, () => {
       this.cursor = addDays(this.cursor, 7);
       this.render();
     });
 
     const weekdayRow = calendar.createDiv({ cls: "mini-calendar__weekdays", attr: { "aria-hidden": "true" } });
-    for (const weekday of ["一", "二", "三", "四", "五", "六", "日"]) {
+    const firstDay = this.plugin.getFirstDayOfWeek();
+    for (const weekday of getWeekdayLabels(firstDay)) {
       weekdayRow.createSpan({ text: weekday });
     }
 
@@ -75,13 +86,17 @@ export class MiniCalendarWidget {
     const today = new Date();
     const visibleFiles: TFile[] = [];
 
-    for (const [index, date] of getWeek(this.cursor).entries()) {
-      const path = this.plugin.getDailyNotePath(date);
-      const abstractFile = this.plugin.app.vault.getAbstractFileByPath(path);
-      const file = abstractFile instanceof TFile ? abstractFile : null;
+    const weekDates = getWeek(this.cursor, firstDay);
+    const isWeekend = (date: Date): boolean => date.getDay() === 0 || date.getDay() === 6;
+    for (const [index, date] of weekDates.entries()) {
+      const file = this.plugin.getExistingDailyNote(date);
       const iso = toIsoDate(date);
       const classes = ["mini-calendar__day"];
-      if (index >= 5) classes.push("is-weekend");
+      if (isWeekend(date)) {
+        classes.push("is-weekend");
+        if (index === 0 || !isWeekend(weekDates[index - 1])) classes.push("is-weekend-start");
+        if (index === weekDates.length - 1 || !isWeekend(weekDates[index + 1])) classes.push("is-weekend-end");
+      }
       if (sameDay(date, today)) classes.push("is-today");
       if (file) classes.push("has-note");
       if (file && this.taskState.get(file.path)) classes.push("has-unfinished-task");
@@ -92,7 +107,7 @@ export class MiniCalendarWidget {
         attr: {
           type: "button",
           role: "gridcell",
-          "aria-label": `${iso}${file ? "，已有日记" : "，创建日记"}`,
+          "aria-label": strings.dayAria(iso, Boolean(file)),
           "data-date": iso
         }
       });

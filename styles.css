@@ -54,6 +54,20 @@
   letter-spacing: .01em;
 }
 
+.mini-calendar__title {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  gap: 6px;
+}
+
+.mini-calendar__week-number {
+  color: var(--text-faint);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
 .mini-calendar__actions {
   display: flex;
   align-items: center;
@@ -143,12 +157,16 @@ button.mini-calendar__today:focus-visible,
   background: var(--background-modifier-hover);
 }
 
-.mini-calendar__day:nth-child(6) {
+.mini-calendar__day.is-weekend-start {
   border-radius: var(--radius-m) 0 0 var(--radius-m);
 }
 
-.mini-calendar__day:nth-child(7) {
+.mini-calendar__day.is-weekend-end {
   border-radius: 0 var(--radius-m) var(--radius-m) 0;
+}
+
+.mini-calendar__day.is-weekend-start.is-weekend-end {
+  border-radius: var(--radius-m);
 }
 
 .mini-calendar__day:hover {

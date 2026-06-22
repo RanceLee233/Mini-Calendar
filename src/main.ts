@@ -1,6 +1,13 @@
-import { Notice, Plugin, TFile, TFolder, normalizePath } from "obsidian";
+import { Modal, Notice, Plugin, Setting, TFile, TFolder, normalizePath } from "obsidian";
 import { MiniCalendarWidget } from "./calendar-widget";
-import { replaceTemplateVariables } from "./calendar-utils";
+import { replaceTemplateVariables, shouldConfirmDailyNoteCreation } from "./calendar-utils";
+import { getStrings } from "./i18n";
+import {
+  DEFAULT_SETTINGS,
+  MiniCalendarSettingTab,
+  normalizeSettings,
+  type MiniCalendarSettings
+} from "./settings";
 
 interface DailyNotesOptions {
   folder?: string;
@@ -21,6 +28,7 @@ interface ObsidianAppWithInternalPlugins {
 
 interface MomentFactory {
   (date?: Date): { format(pattern: string): string };
+  localeData?: () => { firstDayOfWeek(): number };
 }
 
 declare global {
@@ -30,25 +38,29 @@ declare global {
 }
 
 export default class MiniCalendarPlugin extends Plugin {
+  settings: MiniCalendarSettings = DEFAULT_SETTINGS;
   private widgets = new Map<HTMLElement, MiniCalendarWidget>();
   private observer: MutationObserver | null = null;
   private mountTimer: number | null = null;
 
   async onload(): Promise<void> {
+    this.settings = normalizeSettings(await this.loadData());
+    const strings = getStrings();
     this.addCommand({
       id: "show-file-explorer-with-mini-calendar",
-      name: "显示文件列表和迷你日历",
+      name: strings.commands.showCalendar,
       callback: () => {
         void this.showFileExplorer();
       }
     });
     this.addCommand({
       id: "reset-mini-calendar-to-today",
-      name: "回到今天",
+      name: strings.commands.resetToday,
       callback: () => {
         for (const widget of this.widgets.values()) widget.resetToToday();
       }
     });
+    this.addSettingTab(new MiniCalendarSettingTab(this.app, this));
 
     this.app.workspace.onLayoutReady(() => {
       this.mountWidgets();
@@ -79,12 +91,50 @@ export default class MiniCalendarPlugin extends Plugin {
 
   async openDailyNote(date: Date): Promise<void> {
     try {
-      const file = await this.getOrCreateDailyNote(date);
+      const strings = getStrings();
+      if (!this.isDailyNotesEnabled()) {
+        new Notice(strings.dailyNotesDisabled);
+        return;
+      }
+
+      const existing = this.getExistingDailyNote(date);
+      if (shouldConfirmDailyNoteCreation(
+        date,
+        new Date(),
+        this.settings.confirmNonTodayCreation,
+        Boolean(existing)
+      )) {
+        const confirmed = await new ConfirmDailyNoteModal(this.app, this.formatDate(date, "YYYY-MM-DD")).confirm();
+        if (!confirmed) return;
+      }
+
+      const file = existing ?? await this.getOrCreateDailyNote(date);
       await this.app.workspace.getLeaf(false).openFile(file);
     } catch (error) {
       console.error("Mini Calendar failed to open daily note", error);
       new Notice(`无法打开日记：${error instanceof Error ? error.message : String(error)}`);
     }
+  }
+
+  async updateSettings(patch: Partial<MiniCalendarSettings>): Promise<void> {
+    this.settings = normalizeSettings({ ...this.settings, ...patch });
+    await this.saveData(this.settings);
+    this.refreshWidgets();
+  }
+
+  getFirstDayOfWeek(): number {
+    if (this.settings.weekStart === "monday") return 1;
+    if (this.settings.weekStart === "sunday") return 0;
+    const localeFirstDay = window.moment?.localeData?.().firstDayOfWeek();
+    return Number.isInteger(localeFirstDay) && localeFirstDay !== undefined
+      ? ((localeFirstDay % 7) + 7) % 7
+      : 1;
+  }
+
+  getExistingDailyNote(date: Date): TFile | null {
+    if (!this.isDailyNotesEnabled()) return null;
+    const file = this.app.vault.getAbstractFileByPath(this.getDailyNotePath(date));
+    return file instanceof TFile ? file : null;
   }
 
   private async showFileExplorer(): Promise<void> {
@@ -110,6 +160,9 @@ export default class MiniCalendarPlugin extends Plugin {
   }
 
   async getOrCreateDailyNote(date: Date): Promise<TFile> {
+    if (!this.isDailyNotesEnabled()) {
+      throw new Error(getStrings().dailyNotesDisabled);
+    }
     const path = this.getDailyNotePath(date);
     const existing = this.app.vault.getAbstractFileByPath(path);
     if (existing instanceof TFile) return existing;
@@ -141,6 +194,11 @@ export default class MiniCalendarPlugin extends Plugin {
   private getDailyNotesOptions(): DailyNotesOptions {
     const app = this.app as typeof this.app & ObsidianAppWithInternalPlugins;
     return app.internalPlugins?.getPluginById("daily-notes")?.instance?.options ?? {};
+  }
+
+  private isDailyNotesEnabled(): boolean {
+    const app = this.app as typeof this.app & ObsidianAppWithInternalPlugins;
+    return app.internalPlugins?.getPluginById("daily-notes")?.enabled === true;
   }
 
   private scheduleMount(): void {
@@ -197,5 +255,48 @@ export default class MiniCalendarPlugin extends Plugin {
       if (existing) throw new Error(`${current} 已存在，但不是文件夹`);
       await this.app.vault.createFolder(current);
     }
+  }
+}
+
+class ConfirmDailyNoteModal extends Modal {
+  private resolveConfirmation: ((value: boolean) => void) | null = null;
+  private resolved = false;
+
+  constructor(app: MiniCalendarPlugin["app"], private readonly dateLabel: string) {
+    super(app);
+  }
+
+  confirm(): Promise<boolean> {
+    return new Promise(resolve => {
+      this.resolveConfirmation = resolve;
+      this.open();
+    });
+  }
+
+  onOpen(): void {
+    const strings = getStrings();
+    this.setTitle(strings.confirm.title);
+    this.contentEl.createEl("p", { text: strings.confirm.message(this.dateLabel) });
+    new Setting(this.contentEl)
+      .addButton(button => button
+        .setButtonText(strings.confirm.cancel)
+        .onClick(() => this.finish(false)))
+      .addButton(button => {
+        button.setButtonText(strings.confirm.create).setCta();
+        button.onClick(() => this.finish(true));
+      });
+  }
+
+  onClose(): void {
+    this.contentEl.empty();
+    if (!this.resolved) this.finish(false, false);
+  }
+
+  private finish(value: boolean, close = true): void {
+    if (this.resolved) return;
+    this.resolved = true;
+    this.resolveConfirmation?.(value);
+    this.resolveConfirmation = null;
+    if (close) this.close();
   }
 }

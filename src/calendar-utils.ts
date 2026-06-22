@@ -5,11 +5,16 @@ export interface CalendarDateLike {
   getDate(): number;
 }
 
-export function startOfMonday(date: Date): Date {
+export function startOfWeek(date: Date, firstDay = 1): Date {
   const result = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const offset = (result.getDay() + 6) % 7;
+  const normalizedFirstDay = ((firstDay % 7) + 7) % 7;
+  const offset = (result.getDay() - normalizedFirstDay + 7) % 7;
   result.setDate(result.getDate() - offset);
   return result;
+}
+
+export function startOfMonday(date: Date): Date {
+  return startOfWeek(date, 1);
 }
 
 export function addDays(date: Date, count: number): Date {
@@ -18,9 +23,9 @@ export function addDays(date: Date, count: number): Date {
   return result;
 }
 
-export function getWeek(date: Date): Date[] {
-  const monday = startOfMonday(date);
-  return Array.from({ length: 7 }, (_, index) => addDays(monday, index));
+export function getWeek(date: Date, firstDay = 1): Date[] {
+  const weekStart = startOfWeek(date, firstDay);
+  return Array.from({ length: 7 }, (_, index) => addDays(weekStart, index));
 }
 
 export function sameDay(left: Date, right: Date): boolean {
@@ -38,6 +43,23 @@ export function toIsoDate(date: Date): string {
 
 export function hasUnfinishedTask(markdown: string): boolean {
   return /^(?:\s*>\s*)*\s*[-*+]\s+\[ \]\s+/imu.test(markdown);
+}
+
+export function getIsoWeekNumber(date: Date): number {
+  const target = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const weekday = target.getUTCDay() || 7;
+  target.setUTCDate(target.getUTCDate() + 4 - weekday);
+  const yearStart = new Date(Date.UTC(target.getUTCFullYear(), 0, 1));
+  return Math.ceil((((target.getTime() - yearStart.getTime()) / 86_400_000) + 1) / 7);
+}
+
+export function shouldConfirmDailyNoteCreation(
+  date: Date,
+  today: Date,
+  confirmationEnabled: boolean,
+  noteExists: boolean
+): boolean {
+  return confirmationEnabled && !noteExists && !sameDay(date, today);
 }
 
 export function replaceTemplateVariables(
