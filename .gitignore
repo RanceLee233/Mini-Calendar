@@ -1,0 +1,8 @@
+node_modules/
+dist/
+release/
+design-qa.md
+.DS_Store
+*.log
+.tmp-*
+.github/workflows/

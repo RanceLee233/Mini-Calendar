@@ -1,0 +1,19 @@
+{
+  "name": "obsidian-mini-calendar",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "tsc --noEmit",
+    "test": "node scripts/test.mjs",
+    "verify": "npm run check && npm run test && npm run build",
+    "package": "node scripts/package-release.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "esbuild": "^0.25.5",
+    "obsidian": "^1.8.7",
+    "typescript": "^5.8.3"
+  }
+}
