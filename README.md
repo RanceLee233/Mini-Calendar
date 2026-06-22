@@ -199,3 +199,13 @@ OBSIDIAN_PLUGIN_DEV_DIR="/path/to/vault/.obsidian/plugins/mini-calendar" npm run
 ### 许可证
 
 [MIT](LICENSE)
+
+## 交流与反馈 / Community and feedback
+
+欢迎加入 **Obsidian 交流聊天反馈群**。你可以在群里反馈插件问题，也欢迎吹牛聊天、交流 Obsidian、公众号写作和 AI 使用经验。
+
+Join the **Obsidian community and feedback group** to report plugin issues or discuss Obsidian, writing for WeChat, and practical AI workflows.
+
+二维码会定期更新；如果图片中的群码失效，请点击图片打开最新的群聊入口页。
+
+[![Obsidian 交流聊天反馈群二维码](https://blog.discoverlabs.ac.cn/img/wechat-publisher/feedback-group-qr.png?v=202606221720)](https://blog.discoverlabs.ac.cn/posts/0000-obsidian交流聊天反馈群/)
