@@ -109,7 +109,9 @@ export default class MiniCalendarPlugin extends Plugin {
       }
 
       const file = existing ?? await this.getOrCreateDailyNote(date);
-      await this.app.workspace.getLeaf(false).openFile(file);
+      const targetLeaf = this.app.workspace.getMostRecentLeaf(this.app.workspace.rootSplit)
+        ?? this.app.workspace.getLeaf("tab");
+      await targetLeaf.openFile(file);
     } catch (error) {
       console.error("Mini Calendar failed to open daily note", error);
       new Notice(`无法打开日记：${error instanceof Error ? error.message : String(error)}`);
