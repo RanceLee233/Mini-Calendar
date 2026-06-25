@@ -1,6 +1,6 @@
 import { TFile, setIcon } from "obsidian";
 import type MiniCalendarPlugin from "./main";
-import { addDays, getIsoWeekNumber, getWeek, hasUnfinishedTask, sameDay, toIsoDate } from "./calendar-utils";
+import { addDays, getIsoWeekNumber, getTodayWeekdayIndex, getWeek, hasUnfinishedTask, sameDay, toIsoDate } from "./calendar-utils";
 import { formatMonthYear, getStrings, getWeekdayLabels } from "./i18n";
 
 export class MiniCalendarWidget {
@@ -78,13 +78,17 @@ export class MiniCalendarWidget {
 
     const weekdayRow = calendar.createDiv({ cls: "mini-calendar__weekdays", attr: { "aria-hidden": "true" } });
     const firstDay = this.plugin.getFirstDayOfWeek();
-    for (const weekday of getWeekdayLabels(firstDay)) {
-      weekdayRow.createSpan({ text: weekday });
+    const today = new Date();
+    const highlightTodayWeekday = this.plugin.settings.highlightTodayWeekday;
+    const todayWeekdayIndex = highlightTodayWeekday ? getTodayWeekdayIndex(today, firstDay) : -1;
+    const weekdayLabels = getWeekdayLabels(firstDay);
+    for (const [index, weekday] of weekdayLabels.entries()) {
+      const span = weekdayRow.createSpan({ text: weekday });
+      if (index === todayWeekdayIndex) span.addClass("is-today");
     }
 
     const dayRow = calendar.createDiv({ cls: "mini-calendar__days", attr: { role: "grid" } });
     const activeFile = this.plugin.app.workspace.getActiveFile();
-    const today = new Date();
     const visibleFiles: TFile[] = [];
 
     const weekDates = getWeek(this.cursor, firstDay);

@@ -53,6 +53,11 @@ export function getIsoWeekNumber(date: Date): number {
   return Math.ceil((((target.getTime() - yearStart.getTime()) / 86_400_000) + 1) / 7);
 }
 
+export function getTodayWeekdayIndex(today: Date, firstDay: number): number {
+  const normalizedFirstDay = ((firstDay % 7) + 7) % 7;
+  return (today.getDay() - normalizedFirstDay + 7) % 7;
+}
+
 export function shouldConfirmDailyNoteCreation(
   date: Date,
   today: Date,

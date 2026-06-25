@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   getIsoWeekNumber,
+  getTodayWeekdayIndex,
   getWeek,
   hasUnfinishedTask,
   replaceTemplateVariables,
@@ -46,6 +47,20 @@ test("识别未完成任务，不误判已完成任务", () => {
   assert.equal(hasUnfinishedTask("- [ ] 待办"), true);
   assert.equal(hasUnfinishedTask("> - [ ] 引用里的待办"), true);
   assert.equal(hasUnfinishedTask("- [x] 完成\n普通文本 [ ]"), false);
+});
+
+test("计算今天在周表头中的列索引", () => {
+  // 2026-06-25 是周四
+  const thursday = new Date(2026, 5, 25);
+  assert.equal(getTodayWeekdayIndex(thursday, 1), 3); // 周一起始：周四是第 4 列
+  assert.equal(getTodayWeekdayIndex(thursday, 0), 4); // 周日起始：周四是第 5 列
+  // 周日本身：firstDay=monday 时应落在最后一列
+  const sunday = new Date(2026, 5, 28);
+  assert.equal(getTodayWeekdayIndex(sunday, 1), 6);
+  assert.equal(getTodayWeekdayIndex(sunday, 0), 0);
+  // 今天即 firstDay 那一天
+  const monday = new Date(2026, 5, 22);
+  assert.equal(getTodayWeekdayIndex(monday, 1), 0);
 });
 
 test("替换 Daily Notes 常用模板变量", () => {

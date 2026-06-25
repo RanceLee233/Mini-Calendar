@@ -26,6 +26,7 @@ export interface MiniCalendarStrings {
   settings: {
     about: { button: string; description: string; name: string };
     confirmNonToday: { description: string; name: string };
+    highlightTodayWeekday: { description: string; name: string };
     rainbowDates: { description: string; name: string };
     showWeekNumber: { description: string; name: string };
     weekStart: {
@@ -71,6 +72,10 @@ const en: MiniCalendarStrings = {
     confirmNonToday: {
       description: "Ask before creating a daily note for a past or future date. Today's note never requires confirmation.",
       name: "Confirm past and future notes"
+    },
+    highlightTodayWeekday: {
+      description: "Color today's weekday label red in the header row to spot today at a glance.",
+      name: "Highlight today's weekday"
     },
     rainbowDates: {
       description: "Give the seven date cards distinct low-saturation rainbow backgrounds.",
@@ -123,6 +128,10 @@ const zh: MiniCalendarStrings = {
     confirmNonToday: {
       description: "创建过去或未来日期的日记前询问；创建今天的日记始终无需确认。",
       name: "确认创建非当日日记"
+    },
+    highlightTodayWeekday: {
+      description: "在表头将今天对应的星期文字标红，便于一眼定位当日。",
+      name: "高亮今天的星期"
     },
     rainbowDates: {
       description: "为一周七个日期卡片设置不同的低饱和彩虹背景色。",

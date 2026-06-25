@@ -127,11 +127,35 @@ button.mini-calendar__today:focus-visible,
 
 .mini-calendar__weekdays {
   align-items: center;
-  height: 23px;
+  height: 28px;
   color: var(--text-faint);
   font-size: 11px;
   line-height: 1;
   text-align: center;
+}
+
+.mini-calendar__weekdays span {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+}
+
+.mini-calendar__weekdays span::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.mini-calendar__weekdays span.is-today {
+  color: var(--color-red);
+}
+
+.mini-calendar__weekdays span.is-today::before {
+  background: var(--color-red);
 }
 
 .mini-calendar__days {
