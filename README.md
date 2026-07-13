@@ -212,4 +212,4 @@ Join the **Obsidian community and feedback group** to report plugin issues or di
 
 二维码会定期更新；如果图片中的群码失效，请点击图片打开最新的群聊入口页。
 
-[![Obsidian 交流聊天反馈群二维码](https://blog.discoverlabs.ac.cn/img/wechat-publisher/feedback-group-qr.png?v=20260707091055)](https://blog.discoverlabs.ac.cn/posts/0000-obsidian交流聊天反馈群/)
+[![Obsidian 交流聊天反馈群二维码](https://blog.discoverlabs.ac.cn/img/wechat-publisher/feedback-group-qr.png?v=20260713153605)](https://blog.discoverlabs.ac.cn/posts/0000-obsidian交流聊天反馈群/)
