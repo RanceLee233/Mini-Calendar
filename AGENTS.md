@@ -28,7 +28,7 @@ Mini Calendar 是一个保持克制的 Obsidian 社区插件：在 Obsidian 原�
 
 ## 当前结构
 
-- `src/main.ts`：插件生命周期、文件列表挂载、Daily Notes 路径与创建逻辑。
+- `src/main.ts`：插件生命周期、文件列表挂载、离开/返回检测、Daily Notes 路径与创建逻辑。
 - `src/calendar-widget.ts`：日历 DOM、导航、点击和状态指示。
 - `src/calendar-utils.ts`：纯日期、任务和模板工具函数。
 - `src/settings.ts`：设置默认值、数据规范化和设置页。
@@ -70,7 +70,7 @@ npm run verify
 4. 用 DOM 检查确认：不存在 `mini-calendar-view` 独立标签，`.mini-calendar-host` 的父节点是 `data-type="file-explorer"`。
 5. 将文件列表设为 active leaf，单击日期一次，确认主工作区立即打开日记且文件列表仍存在。
 6. 验证今天不确认、过去/未来缺失日记确认、已有日记不确认、关闭确认选项后不确认。
-7. 验证上一周、下一周、返回今天、周一/周日起始、ISO 周号和彩虹开关。
+7. 验证上一周、下一周、返回今天、周一/周日起始、ISO 周号和彩虹开关；翻到其他周后，短时离开再返回保留该周，离开 30 分钟以上或跨天后自动回到本周。
 8. 验证浅色和暗色主题；彩虹关闭时检查薄荷绿周末。
 9. 只有获得用户许可后才能截图；验收后清理含私人界面的全屏截图。
 
@@ -80,7 +80,7 @@ npm run verify
 
 - 保留用户已有改动，不执行破坏性 Git 命令。
 - 提交前运行 `git diff --check`、密钥扫描和 `npm run verify`。
-- `package.json`、`manifest.json`、`versions.json` 的版本必须一致。
+- `package.json`、`package-lock.json`（根 `version`）、`manifest.json`、`versions.json` 的版本必须一致。
 - GitHub Release 标签必须与 `manifest.json` 的版本完全一致，不能带 `v` 前缀。
 - Release 必须上传 `main.js`、`manifest.json`、`styles.css`。
 - README 必须保留中英文、隐私说明、安装说明、MIT 许可证链接和 Notebook Navigator 致谢。
@@ -95,7 +95,7 @@ npm run verify
 
 新增功能前先证明它服务于“紧凑单周日历 + Daily Notes 导航”这一核心目标。
 
-- 已有核心功能：中英文本地化、每周起始日、非当日创建确认、可选 ISO 周号、彩虹日期、薄荷绿周末、可选今日星期高亮、键盘焦点与 aria-label。
+- 已有核心功能：中英文本地化、每周起始日、非当日创建确认、可选 ISO 周号、彩虹日期、薄荷绿周末、可选今日星期高亮、重新打开自动回到本周、键盘焦点与 aria-label。
 - 推荐的小功能：键盘导航、无障碍细化和不扩张产品边界的主题适配。
 - 默认拒绝的扩张：事件管理、在线日历同步、年度/月度大视图、任务管理器、习惯追踪、账号系统、网络服务。
 - 设置项必须有明确用户价值，提供安全默认值，并补充迁移、测试和 README 文档。
