@@ -5,6 +5,7 @@ import { formatMonthYear, getStrings, getWeekdayLabels } from "./i18n";
 
 export class MiniCalendarWidget {
   private cursor = new Date();
+  private renderedDay = toIsoDate(this.cursor);
   private taskState = new Map<string, boolean>();
   private refreshTimer: number | null = null;
 
@@ -21,6 +22,8 @@ export class MiniCalendarWidget {
   }
 
   refresh(): void {
+    // 跨天后回到本周；同一天内保留用户手动翻到的周。
+    if (toIsoDate(new Date()) !== this.renderedDay) this.cursor = new Date();
     this.render();
   }
 
@@ -40,6 +43,7 @@ export class MiniCalendarWidget {
   private render(): void {
     const root = this.hostEl;
     root.empty();
+    this.renderedDay = toIsoDate(new Date());
     const strings = getStrings();
     root.setAttr("aria-label", strings.calendarLabel);
 

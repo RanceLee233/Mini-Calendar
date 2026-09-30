@@ -49,6 +49,7 @@ Mini Calendar 是一个保持克制的 Obsidian 社区插件：在 Obsidian 原�
 - 关闭彩虹后，周六和周日使用薄荷绿：浅色主题参考 `#E8F5E9`，暗色主题参考 `#498F6F` 混合色。
 - 核心 Daily Notes 未启用时必须提示用户，不得静默在仓库根目录创建文件。
 - 缺失日记使用核心 Daily Notes 的目录、文件名格式和模板；`{{date}}` 使用所选日期，`{{time}}` 使用创建时刻。
+- 离开 Obsidian（`visibilitychange` 隐藏或窗口失焦）30 分钟以上再回来，或跨天后刷新，日历自动回到本周；同一天短时离开保留手动翻到的周。
 - 打开日记时使用 `workspace.getMostRecentLeaf(workspace.rootSplit)`，不得退回依赖当前 active leaf 的 `getLeaf(false)`。
 
 ## 验证闭环

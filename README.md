@@ -63,6 +63,7 @@ Open Obsidian's built-in File explorer. The calendar appears at the bottom of th
 - Select a date to open or create its daily note.
 - Use the arrow buttons to move by one week.
 - Select **Today** to return to the current week.
+- When you come back to Obsidian after 30 minutes or more, or on a new day, the calendar returns to the current week automatically. Weeks you browse within the same session are kept.
 
 ### Settings
 
@@ -163,6 +164,7 @@ Mini Calendar 在 Obsidian 原生文件列表底部嵌入一个紧凑的单周�
 - 点击日期可打开或创建对应日记。
 - 点击左右箭头可切换上一周或下一周。
 - 点击「今天」可返回当前周。
+- 离开 Obsidian 30 分钟以上再回来，或跨天后，日历会自动回到本周；同一次使用中手动翻到的周会保留。
 
 ### 设置
 

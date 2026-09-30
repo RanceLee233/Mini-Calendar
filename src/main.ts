@@ -9,6 +9,8 @@ import {
   type MiniCalendarSettings
 } from "./settings";
 
+const RESUME_RESET_MS = 30 * 60 * 1000;
+
 interface DailyNotesOptions {
   folder?: string;
   format?: string;
@@ -40,6 +42,7 @@ declare global {
 export default class MiniCalendarPlugin extends Plugin {
   settings: MiniCalendarSettings = DEFAULT_SETTINGS;
   private widgets = new Map<HTMLElement, MiniCalendarWidget>();
+  private leftAt: number | null = null;
   private observer: MutationObserver | null = null;
   private mountTimer: number | null = null;
 
@@ -77,6 +80,26 @@ export default class MiniCalendarPlugin extends Plugin {
     this.registerEvent(this.app.vault.on("modify", (file) => {
       if (file instanceof TFile && file.extension === "md") this.refreshWidgets();
     }));
+
+    // 离开 Obsidian 较久后再回来（手机从后台切回、桌面切回窗口）视为重新打开，定位到本周。
+    const onLeave = () => {
+      this.leftAt ??= Date.now();
+    };
+    const onReturn = () => {
+      const leftAt = this.leftAt;
+      this.leftAt = null;
+      if (leftAt !== null && Date.now() - leftAt >= RESUME_RESET_MS) {
+        for (const widget of this.widgets.values()) widget.resetToToday();
+      } else {
+        this.refreshWidgets();
+      }
+    };
+    this.registerDomEvent(activeDocument, "visibilitychange", () => {
+      if (activeDocument.visibilityState === "hidden") onLeave();
+      else onReturn();
+    });
+    this.registerDomEvent(activeWindow, "blur", onLeave);
+    this.registerDomEvent(activeWindow, "focus", onReturn);
   }
 
   onunload(): void {
